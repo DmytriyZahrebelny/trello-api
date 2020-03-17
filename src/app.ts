@@ -1,6 +1,13 @@
 import { Server, IncomingMessage, ServerResponse } from 'http';
 import { Pool } from 'pg';
-import { createBoard, sendBoards, deleteBoard, updateBoard } from './api/boards/board';
+import {
+	createBoard,
+	sendBoards,
+	deleteBoard,
+	updateBoard,
+	sendBoardData,
+} from './api/boards/board';
+import { createColumn, deleteColumn, updateColumn } from './api/columns/columns';
 
 export const app: Server = new Server();
 const pool = new Pool({
@@ -26,21 +33,29 @@ const server = (req: IncomingMessage, res: ServerResponse): void => {
 		case 'GET':
 			if (req.url === '/boards') {
 				sendBoards(res, pool);
+			} else if (req.url === '/board-data') {
+				sendBoardData(req, res, pool);
 			}
 			break;
 		case 'POST':
 			if (req.url === '/create-board') {
 				createBoard(req, res, pool);
+			} else if (req.url === '/create-column') {
+				createColumn(req, res, pool);
 			}
 			break;
 		case 'PUT':
 			if (req.url === '/update-board') {
 				updateBoard(req, res, pool);
+			} else if (req.url === '/update-column') {
+				updateColumn(req, res, pool);
 			}
 			break;
 		case 'DELETE':
 			if (req.url === '/delete-board') {
 				deleteBoard(req, res, pool);
+			} else if (req.url === '/delete-column') {
+				deleteColumn(req, res, pool);
 			}
 			break;
 		default:
