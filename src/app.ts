@@ -1,9 +1,6 @@
 import { Server, IncomingMessage, ServerResponse } from 'http';
 import { Pool } from 'pg';
-import { createBoard } from './api/boards/createBoard';
-import { sendBoards } from './api/boards/sendBoards';
-import { deleteBoard } from './api/boards/deleteBoard';
-import { updateBoard } from './api/boards/updateBoard';
+import { createBoard, sendBoards, deleteBoard, updateBoard } from './api/boards/board';
 
 export const app: Server = new Server();
 const pool = new Pool({
