@@ -1,3 +1,3 @@
-import * as http from 'http';
+import { app } from './app';
 
-console.log(http);
+app.listen(9000);
