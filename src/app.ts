@@ -8,6 +8,7 @@ import {
 	sendBoardData,
 } from './api/boards/board';
 import { createColumn, deleteColumn, updateColumn } from './api/columns/columns';
+import { createCell, deleteCell, updateCellTitle } from './api/cells/cells';
 
 export const app: Server = new Server();
 const pool = new Pool({
@@ -42,6 +43,8 @@ const server = (req: IncomingMessage, res: ServerResponse): void => {
 				createBoard(req, res, pool);
 			} else if (req.url === '/create-column') {
 				createColumn(req, res, pool);
+			} else if (req.url === '/create-cell') {
+				createCell(req, res, pool);
 			}
 			break;
 		case 'PUT':
@@ -49,6 +52,8 @@ const server = (req: IncomingMessage, res: ServerResponse): void => {
 				updateBoard(req, res, pool);
 			} else if (req.url === '/update-column') {
 				updateColumn(req, res, pool);
+			} else if (req.url === '/update-cell') {
+				updateCellTitle(req, res, pool);
 			}
 			break;
 		case 'DELETE':
@@ -56,6 +61,8 @@ const server = (req: IncomingMessage, res: ServerResponse): void => {
 				deleteBoard(req, res, pool);
 			} else if (req.url === '/delete-column') {
 				deleteColumn(req, res, pool);
+			} else if (req.url === '/delete-cell') {
+				deleteCell(req, res, pool);
 			}
 			break;
 		default:

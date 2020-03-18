@@ -3,8 +3,8 @@ import { Pool } from 'pg';
 
 export const createBoard = (req: IncomingMessage, res: ServerResponse, pool: Pool): void => {
 	req.on('data', data => {
-		const userResponse = data.toString();
-		pool.query(`INSERT INTO board (name) values (${userResponse})`);
+		const boardName = data.toString();
+		pool.query(`INSERT INTO board (name) values (${boardName})`);
 	});
 
 	res.statusCode = 200;
