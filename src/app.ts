@@ -19,15 +19,10 @@ const pool = new Pool({
 	password: '1',
 });
 
-// const fields = ['schemaname', 'tablename', 'tableowner'].join(', ');
-// const sql = 'SELECT * FROM columns ORDER BY id ASC';
 // SELECT b.id, b.name, c.columnname, c.boardid, cl.columnid, cl.title, cl.body FROM board b LEFT JOIN columns c on b.id=c.boardid LEFT JOIN cells cl on c.id=cl.columnid;
 
-// const sql =
-// 	'SELECT b.id, b.name, c.columnname, c.boardid FROM board b LEFT JOIN columns c ON b.id=c.boardid where b.id=1';
+// 'SELECT b.id, b.name, c.columnname, c.boardid FROM board b LEFT JOIN columns c ON b.id=c.boardid where b.id=1';
 // 'SELECT b.id, b.name, c.columnname, c.boardid, cl.columnid, cl.title, cl.body FROM board b LEFT JOIN columns c on b.id=c.boardid LEFT JOIN cells cl on c.id=cl.columnid';
-
-// 'SELECT b.id, b.name, c.columnname, c.boardid FROM board b LEFT JOIN columns c on b.id=c.boardid';
 
 const server = (req: IncomingMessage, res: ServerResponse): void => {
 	switch (req.method) {

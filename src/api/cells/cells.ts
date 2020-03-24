@@ -5,7 +5,7 @@ export const createCell = (req: IncomingMessage, res: ServerResponse, pool: Pool
 	req.on('data', async data => {
 		const { title, body, columnId } = await JSON.parse(data);
 		await pool.query(
-			`INSERT INTO cells (columnid, title, body) values ('${columnId}', '${title}', '${body}')`
+			`INSERT INTO cells (columnid, title, body) VALUES ('${columnId}', '${title}', '${body}')`
 		);
 	});
 

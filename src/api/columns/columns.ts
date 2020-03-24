@@ -5,7 +5,7 @@ export const createColumn = (req: IncomingMessage, res: ServerResponse, pool: Po
 	req.on('data', data => {
 		const { name, boardId } = JSON.parse(data);
 
-		pool.query(`INSERT INTO columns (columnname, boardid) values ('${name}', '${boardId}')`);
+		pool.query(`INSERT INTO columns (columnname, boardid) VALUES ('${name}', '${boardId}')`);
 	});
 
 	res.statusCode = 200;
@@ -27,7 +27,7 @@ export const updateColumn = (req: IncomingMessage, res: ServerResponse, pool: Po
 	req.on('data', async data => {
 		const { name, id } = await JSON.parse(data);
 
-		pool.query(`update columns set columnname='${name}' where id=${id}`);
+		pool.query(`UPDATE columns SET columnname='${name}' WHERE id=${id}`);
 	});
 
 	res.statusCode = 200;
