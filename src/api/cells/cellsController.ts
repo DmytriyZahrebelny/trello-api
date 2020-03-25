@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Pool } from 'pg';
+import { ColumnId, CellTitle, CellBody, CellId } from './cellsController.interface';
 
 const pool = new Pool({
 	host: '127.0.0.1',
@@ -17,53 +18,36 @@ class CellsController {
 	}
 
 	public intializeRoutes(): void {
-		this.router.get('/create-column', this.getBoards);
-		// this.router.get('/board-data', this.getBoardData);
-		// this.router.post('/create-board', this.createBoard);
-		// this.router.put('/update-board', this.updateBoard);
-		// this.router.delete('/delete-board', this.deleteBoard);
+		this.router.post('/create-cell', this.createCell);
+		this.router.put('/update-cell', this.updateCellTitle);
+		this.router.delete('/delete-cell', this.deleteCell);
 	}
 
-	async getBoards(req: Request, res: Response): Promise<void> {
-		const { rows } = await pool.query('SELECT * FROM board');
+	async createCell(req: Request, res: Response): Promise<void> {
+		const { cellTitle, cellBody, columnId }: CellTitle & CellBody & ColumnId = await req.body;
+		await pool.query(
+			`INSERT INTO cells (columnid, title, body) VALUES ('${columnId}', '${cellTitle}', '${cellBody}')`
+		);
+
 		res.status(200);
-		res.send(rows);
+		res.send('true');
 	}
 
-	// async getBoardData(req: Request, res: Response): Promise<void> {
-	// 	const { boardId }: BoardId = await req.body;
-	// 	const sql = `SELECT b.id, b.name, c.columnname, c.boardid, cl.columnid, cl.title, cl.body FROM board b LEFT JOIN columns c ON b.id=c.boardid LEFT JOIN cells cl ON c.id=cl.columnid WHERE b.id=${boardId}`;
-	// 	const { rows } = await pool.query(sql);
+	async deleteCell(req: Request, res: Response): Promise<void> {
+		const { cellId }: CellId = await req.body;
+		await pool.query(`DELETE FROM cells WHERE id=${cellId}`);
 
-	// 	res.status(200);
-	// 	res.send(rows);
-	// }
+		res.status(200);
+		res.send('true');
+	}
 
-	// async createBoard(req: Request, res: Response): Promise<void> {
-	// 	const { boardName }: BoardName = await req.body;
-	// 	await pool.query(`INSERT INTO board (name) VALUES ('${boardName}')`);
+	async updateCellTitle(req: Request, res: Response): Promise<void> {
+		const { cellTitle, cellId }: CellTitle & CellId = await req.body;
+		await pool.query(`UPDATE cells SEt title='${cellTitle}' WHERE id=${cellId}`);
 
-	// 	res.status(200);
-	// 	res.send('true');
-	// }
-
-	// async updateBoard(req: Request, res: Response): Promise<void> {
-	// 	const { boardName, boardId }: BoardName & BoardId = await req.body;
-
-	// 	await pool.query(`UPDATE board SET name='${boardName}' WHERE id=${boardId}`);
-
-	// 	res.status(200);
-	// 	res.send('true');
-	// }
-
-	// async deleteBoard(req: Request, res: Response): Promise<void> {
-	// 	const { boardId }: BoardId = await req.body;
-
-	// 	await pool.query(`DELETE FROM board WHERE id=${boardId}`);
-
-	// 	res.status(200);
-	// 	res.send('true');
-	// }
+		res.status(200);
+		res.send('true');
+	}
 }
 
 export default CellsController;
