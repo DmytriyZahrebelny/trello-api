@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Pool } from 'pg';
-import { BoardId, BoardName } from './BoardController.interface';
+import { BoardId, BoardName } from './boardsController.interface';
 
 const pool = new Pool({
 	host: '127.0.0.1',
@@ -10,7 +10,7 @@ const pool = new Pool({
 	password: '1',
 });
 
-class BoardController {
+class BoardsController {
 	public router = express.Router();
 
 	constructor() {
@@ -67,4 +67,4 @@ class BoardController {
 	}
 }
 
-export default BoardController;
+export default BoardsController;

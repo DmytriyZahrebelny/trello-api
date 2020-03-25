@@ -1,6 +1,7 @@
 import App from './app';
-import BoardController from './api/boards/boardController';
+import BoardsController from './api/boards/boardsController';
+import ColumnsController from './api/columns/ColumnsController';
 
-const app = new App([new BoardController()], 9000);
+const app = new App([new BoardsController(), new ColumnsController()], 9000);
 
 app.listen();
