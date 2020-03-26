@@ -1,6 +1,7 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { Pool } from 'pg';
 import { BoardId, BoardName } from './boardsController.interface';
+import BoardException from '../../exceptions/BoardException';
 
 const pool = new Pool({
 	host: '127.0.0.1',
@@ -31,13 +32,21 @@ class BoardsController {
 		res.send(rows);
 	}
 
-	async getBoardData(req: Request, res: Response): Promise<void> {
+	async getBoardData(req: Request, res: Response, next: NextFunction): Promise<void> {
 		const { boardId }: BoardId = await req.body;
-		const sql = `SELECT b.id, b.name, c.columnname, c.boardid, cl.columnid, cl.title, cl.body FROM board b LEFT JOIN columns c ON b.id=c.boardid LEFT JOIN cells cl ON c.id=cl.columnid WHERE b.id=${boardId}`;
-		const { rows } = await pool.query(sql);
+		try {
+			const sql = `SELECT b.id, b.name, c.columnname, c.boardid, cl.columnid, cl.title, cl.body FROM board b LEFT JOIN columns c ON b.id=c.boardid LEFT JOIN cells cl ON c.id=cl.columnid WHERE b.id=${boardId}`;
+			const { rows } = await pool.query(sql);
 
-		res.status(200);
-		res.send(rows);
+			if (rows.length === 0) {
+				throw 'Error';
+			}
+
+			res.status(200);
+			res.send(rows);
+		} catch (error) {
+			next(new BoardException(boardId));
+		}
 	}
 
 	async createBoard(req: Request, res: Response): Promise<void> {
