@@ -1,6 +1,7 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { Pool } from 'pg';
 import { ColumnId, ColumnName, BoardId } from './columnsController.interface';
+import HttpException from '../../exceptions/HttpException';
 
 const pool = new Pool({
 	host: '127.0.0.1',
@@ -23,32 +24,65 @@ class ColumnsController {
 		this.router.put('/update-column', this.updateColumn);
 	}
 
-	async createColumn(req: Request, res: Response): Promise<void> {
+	async createColumn(req: Request, res: Response, next: NextFunction): Promise<void> {
 		const { columnName, boardId }: ColumnName & BoardId = await req.body;
-		await pool.query(
-			`INSERT INTO columns (columnname, boardid) VALUES ('${columnName}', '${boardId}')`
-		);
 
-		res.status(200);
-		res.send('true');
+		try {
+			if (columnName.length) {
+				const { rowCount } = await pool.query(
+					`INSERT INTO columns (columnname, boardid) VALUES ('${columnName}', '${boardId}')`
+				);
+
+				if (rowCount) {
+					res.status(200);
+					res.send('true');
+				} else {
+					throw new HttpException(404, `Board with id ${boardId} not found`);
+				}
+			} else {
+				throw new HttpException(400, 'min length column name 1');
+			}
+		} catch (error) {
+			next(error);
+		}
 	}
 
-	async deleteColumn(req: Request, res: Response): Promise<void> {
+	async deleteColumn(req: Request, res: Response, next: NextFunction): Promise<void> {
 		const { columnId }: ColumnId = await req.body;
 
-		await pool.query(`DELETE FROM columns WHERE id=${columnId}`);
+		try {
+			const { rowCount } = await pool.query(`DELETE FROM columns WHERE id=${columnId}`);
 
-		res.status(200);
-		res.send('true');
+			if (rowCount) {
+				res.status(200);
+				res.send('true');
+			} else {
+				throw new HttpException(404, `Column with id ${columnId} not found`);
+			}
+		} catch (error) {
+			next(error);
+		}
 	}
 
-	async updateColumn(req: Request, res: Response): Promise<void> {
+	async updateColumn(req: Request, res: Response, next: NextFunction): Promise<void> {
 		const { columnName, columnId }: ColumnName & ColumnId = await req.body;
 
-		await pool.query(`UPDATE columns SET columnname='${columnName}' WHERE id=${columnId}`);
+		try {
+			if (columnName.length) {
+				const { rowCount } = await pool.query(
+					`UPDATE columns SET columnname='${columnName}' WHERE id=${columnId}`
+				);
 
-		res.status(200);
-		res.send('true');
+				if (rowCount) {
+					res.status(200);
+					res.send('true');
+				}
+			} else {
+				throw new HttpException(400, 'min length column name 1');
+			}
+		} catch (error) {
+			next(error);
+		}
 	}
 }
 

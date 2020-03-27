@@ -3,5 +3,5 @@ export interface BoardId {
 }
 
 export interface BoardName {
-	boardName: number;
+	boardName: string;
 }
