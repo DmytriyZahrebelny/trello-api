@@ -13,11 +13,15 @@ class App {
 
 		this.initializeMiddlewares();
 		this.initializeControllers(controllers);
+		this.initializeErrorHandling();
 	}
 
 	private initializeMiddlewares(): void {
-		this.app.use(loggerMiddleware);
 		this.app.use(bodyParser.json());
+		this.app.use(loggerMiddleware);
+	}
+
+	private initializeErrorHandling(): void {
 		this.app.use(errorMiddleware);
 	}
 
